@@ -15,7 +15,7 @@
     "vardiff_target_shares_min": 8,
     "vardiff_quickdiff_count": 8,
     "vardiff_quickdiff_delta": 8,
-    "share_stale_seconds": 20,
+    "share_stale_seconds": 60,
     "fingerprint_miners": true,
     "idle_timeout_no_subscribe": 15,
     "idle_timeout_no_shares": 7200,
