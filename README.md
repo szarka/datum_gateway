@@ -89,7 +89,7 @@ For Debian/Ubuntu it would be:
 For Red Hat/Fedora it would be:
 
 ```
-sudo dnf install cmake pkgconf libcurl-devel jansson jansson-devel libmicrohttpd-devel libsodium-devel psmisc
+sudo dnf install cmake pkgconf libcurl-devel jansson-devel libmicrohttpd-devel libsodium-devel psmisc
 ```
 Note: You may also need to add `git` and `gcc` to the above list if a git client and compiler, respectively, aren't already set up on your system.
 
