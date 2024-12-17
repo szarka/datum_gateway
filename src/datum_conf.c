@@ -262,7 +262,7 @@ int datum_read_config(const char *conffile) {
 	
 	config = load_json_from_file(conffile);
 	
-	if (!config) {
+	if (!json_is_object(config)) {
 		DLOG_FATAL("Could not read configuration JSON file!");
 		return -1;
 	}
@@ -270,10 +270,10 @@ int datum_read_config(const char *conffile) {
 	for (i=0;i<NUM_CONFIG_ITEMS;i++) {
 		item = NULL; cat = NULL;
 		cat = json_object_get(config, datum_config_options[i].category);
-		if (cat) {
+		if (json_is_object(cat)) {
 			item = json_object_get(cat, datum_config_options[i].name);
 		}
-		if ((!cat) || (!item)) {
+		if ((!item) || json_is_null(item)) {
 			if (datum_config_options[i].required) {
 				DLOG_ERROR("Required configuration option (%s.%s) not found in config file:", datum_config_options[i].category, datum_config_options[i].name);
 				DLOG_ERROR("--- Config description: \"%s\"", datum_config_options[i].description);
@@ -348,17 +348,27 @@ int datum_read_config(const char *conffile) {
 	
 	if (roundDownToPowerOfTwo_64(datum_config.stratum_v1_vardiff_min) != datum_config.stratum_v1_vardiff_min) {
 		const int nv = roundDownToPowerOfTwo_64(datum_config.stratum_v1_vardiff_min);
-		DLOG_WARN("stratum.stratum_v1_vardiff_min MUST be a power of two. adjusting from %d to %d", datum_config.stratum_v1_vardiff_min, nv);
+		DLOG_WARN("stratum.vardiff_min MUST be a power of two. adjusting from %d to %d", datum_config.stratum_v1_vardiff_min, nv);
 		datum_config.stratum_v1_vardiff_min = nv;
 	}
 	
 	if (datum_config.stratum_v1_vardiff_min < 1) {
-		DLOG_FATAL("Stratum server stratum.stratum_v1_vardiff_min must be at least 1 (suggest at least 1024, but more likely 32768)");
+		DLOG_FATAL("Stratum server stratum.vardiff_min must be at least 1 (suggest at least 1024, but more likely 32768)");
 		return 0;
 	}
 	
 	if (datum_config.stratum_v1_max_clients > (datum_config.stratum_v1_max_clients_per_thread*datum_config.stratum_v1_max_threads)) {
 		DLOG_FATAL("Stratum server configuration error. Max clients too high for thread settings");
+		return 0;
+	}
+	
+	if (datum_config.stratum_v1_share_stale_seconds < 60) {
+		DLOG_FATAL("Stratum server stratum.share_stale_seconds must be at least 60 (suggest 120)");
+		return 0;
+	}
+	
+	if (datum_config.stratum_v1_share_stale_seconds > 150) {
+		DLOG_FATAL("Stratum server stratum.share_stale_seconds must not exceed 150 (suggest 120)");
 		return 0;
 	}
 	
