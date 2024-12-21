@@ -4,9 +4,9 @@ Documentation=https://github.com/OCEAN-xyz/datum_gateway
 
 #
 # Expected file locations when using hardening options:
-# binary: /usr/bin/datum/
+# binary: /usr/bin/
 # configuration: /etc/datum/
-# logs: /var/lib/datum_gateway/
+# logs: /var/log/datum_gateway/
 #
 
 # https://www.freedesktop.org/wiki/Software/systemd/NetworkTarget/
@@ -17,7 +17,7 @@ After=network-online.target
 
 [Service]
 
-ExecStart=/usr/bin/datum/datum_gateway --config=/etc/datum/datum_gateway_config.json
+ExecStart=/usr/bin/datum_gateway --config=/etc/datum/datum_gateway_config.json
 
 # Make sure the config directory is readable by the service user
 PermissionsStartOnly=true
@@ -28,8 +28,6 @@ ExecStartPre=/bin/chgrp datum /etc/datum
 #
 
 Type=simple
-NotifyAccess=all
-PIDFile=/run/datum/datum_gateway.pid
 
 Restart=on-failure
 TimeoutStartSec=infinity
@@ -53,9 +51,9 @@ RuntimeDirectoryMode=0710
 ConfigurationDirectory=datum
 ConfigurationDirectoryMode=0710
 
-# /var/lib/datum_gateway
-StateDirectory=datum_gateway
-StateDirectoryMode=0710
+# /var/log/datum_gateway
+LogsDirectory=datum_gateway
+LogsDirectoryMode=0710
 
 #
 # Hardening
